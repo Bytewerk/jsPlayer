@@ -3,6 +3,7 @@
 # vim: noexpandtab sw=2 ts=2 sts=2
 
 import os
+import sys
 import pyid3lib
 import json
 import codecs
@@ -13,6 +14,10 @@ from StringIO import StringIO
 
 THUMBSIZE = (64, 64)
 OUTPUT = "database.json"
+FOLDER = "."
+
+if len(sys.argv) > 1:
+	FOLDER = sys.argv[1]
 
 def encode_image(obj):
 	mimetype = obj['mimetype']
@@ -31,7 +36,7 @@ def encode_image(obj):
 
 mp3db = {}
 
-for root, dirs, files in os.walk("."):
+for root, dirs, files in os.walk(FOLDER):
 	rootparts = root.split(os.path.sep)
 
 	dirobj = mp3db
