@@ -58,11 +58,11 @@ for root, dirs, files in os.walk(FOLDER):
 			id3tags = pyid3lib.tag(filename)
 
 			mp3info = {"/type/": "file"}
-			if 'TPE1' in id3tags:
+			if hasattr(id3tags, 'artist'):
 				mp3info['artist'] = codecs.decode(id3tags.artist, 'utf-8', 'replace')
-			if 'TIT2' in id3tags:
+			if hasattr(id3tags, 'title'):
 				mp3info['title'] = codecs.decode(id3tags.title, 'utf-8', 'replace')
-			if 'TALB' in id3tags:
+			if hasattr(id3tags, 'album'):
 				mp3info['album'] = codecs.decode(id3tags.album, 'utf-8', 'replace')
 			if 'APIC' in id3tags:
 				print("Image data found.")
