@@ -211,7 +211,7 @@ function JsPlayer() {
 	this.audio.playlist.onsongchange = songchange;
 
 	this.audio.addEventListener("ended", function() {
-		this.audio.playlist.next();
+		this.playlist.next();
 	});
 
 	return this.audio;
