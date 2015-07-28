@@ -214,6 +214,11 @@ function JsPlayer() {
 		this.playlist.next();
 	});
 
+	this.audio.addEventListener("timeupdate", function() {
+		progressbar = document.querySelector("div#progressbar");
+		progressbar.style.width = (this.currentTime / this.duration * 100) + "%";
+	});
+
 	return this.audio;
 };
 
