@@ -229,6 +229,8 @@ function songchange(audioFile) {
 function songadd(audioFile) {
 	htmlPlaylist = document.querySelector("div#playlist");
 	htmlElement = document.createElement("div");
-	htmlElement.innerHTML = jsPlayer.playlist.findPosition(audioFile) + audioFile.name
+	htmlElement.innerHTML = jsPlayer.playlist.findPosition(audioFile) + audioFile.name;
+
+	htmlPlaylist.appendChild(htmlElement);
 }
 
