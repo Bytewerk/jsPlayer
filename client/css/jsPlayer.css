@@ -140,3 +140,39 @@ html {
 	background: rgba(111, 105, 105, 0.05);
 	border: 1px solid rgba(89, 89, 89, 0.67);
 }
+
+.file {
+	padding-left: 1em;
+	border-left: 1px solid white;
+	margin-left: 0.25em;
+}
+
+.file:hover {
+	background-color: rgba(255, 255, 255, 0.2);
+}
+
+.folder {
+	margin-left: 1em;
+}
+
+.album_art {
+	min-width: 1em;
+	display: inline-block;
+}
+
+.album_art img {
+	width: 1em;
+	height: 1em;
+	vertical-align: middle;
+}
+
+.album_art img:hover {
+	width: 64px;
+	height: 64px;
+}
+
+.library_name {
+	margin-left: 0.5em;
+	display: inline-block;
+	vertical-align: middle;
+}

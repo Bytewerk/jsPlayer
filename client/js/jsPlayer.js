@@ -49,7 +49,12 @@ window.onload = function () {
 };
 
 function onMusicClickListener(e) {
-	targetId = e.target.getAttribute("unique_id");
+	t = e.target;
+	do {
+		targetId = t.getAttribute("unique_id");
+		t = t.parentNode;
+	} while(t && !targetId);
+
 	pathToPlay = rootFiletree.findElement(targetId);
 	jsPlayer.playlist.add(pathToPlay);
 };
