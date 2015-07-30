@@ -188,6 +188,15 @@ function Playlist(audioElement) {
 		};
 	};
 
+	this.play = function(elementNr) {
+		if(elementNr >= 0 && elementNr <= this.elements.length) {
+			this.currentElementIndex = elementNr;
+			this.onsongchange(this.elements[this.currentElementIndex]);
+			this.audioElement.src = this.elements[this.currentElementIndex].musicFile.getPath();
+			this.audioElement.play();
+		};
+	};
+
 	this.add = function(songFile, position) {
 		var playlistElement = new PlaylistElement(songFile);
 		var position = position == undefined ? this.elements.length : position;
