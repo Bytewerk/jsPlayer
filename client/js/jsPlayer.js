@@ -1,4 +1,4 @@
-dbfilename = "database.json"
+dbfilename = "database.json";
 rootFiletree = new Folder(" ");
 jsPlayer = new JsPlayer();
 var global_unique_id = 0;
@@ -22,11 +22,13 @@ window.onload = function () {
 					for (var i = 0, len = allSongDivs.length; i < len; i++) {
 						allSongDivs[i].addEventListener("click", onMusicClickListener);
 					};
+					hideMusicSelectionDialog();
 				};
 			};
 		};
 		xhr.send();
 	}, false);
+
 
 	toggleBtn = document.querySelector("#toggle.button");
 	nextBtn = document.querySelector("#next.button");
@@ -189,7 +191,7 @@ function Playlist(audioElement) {
 	};
 
 	this.play = function(elementNr) {
-		if(elementNr >= 0 && elementNr <= this.elements.length) {
+		if(elementNr >= 0 && elementNr < this.elements.length) {
 			this.currentElementIndex = elementNr;
 			this.onsongchange(this.elements[this.currentElementIndex]);
 			this.audioElement.src = this.elements[this.currentElementIndex].musicFile.getPath();
@@ -203,6 +205,9 @@ function Playlist(audioElement) {
 		this.elements.splice(position, 0, playlistElement);
 		this.updateAllElementIndex();
 		this.onsongadd(playlistElement);
+		if(this.elements.length==1) {
+			this.play(0);
+		};
 	};
 
 	this.updateAllElementIndex = function() {
@@ -232,14 +237,25 @@ function JsPlayer() {
 		progressbar.style.width = (this.currentTime / this.duration * 100) + "%";
 	});
 
+	this.audio.addEventListener("play", function() {
+		toggleBtn.classList.add("pause")
+		toggleBtn.classList.remove("play")
+	});
+
+	this.audio.addEventListener("pause", function() {
+		toggleBtn.classList.add("play")
+		toggleBtn.classList.remove("pause")
+	});
+
 	this.audio.toggle = function() {
-		foo = this;
-		if(this.paused) {
-			this.play();
-		} else {
-			this.pause();
-		}
-	}
+		if(this.playlist.elements.length > 0) {
+			if(this.paused) {
+				this.play();
+			} else {
+				this.pause();
+			};
+		};
+	};
 
 	return this.audio;
 };
@@ -251,8 +267,12 @@ function songchange(audioFile) {
 function songadd(playlistElement) {
 	htmlPlaylist = document.querySelector("div#playlist");
 	htmlElement = document.createElement("div");
-	htmlElement.innerHTML = playlistElement.playlistPosition + ": " + playlistElement.musicFile.name;
-
+	htmlElement.innerHTML = "<pre class=\"playlistPosition\">" + (playlistElement.playlistPosition + 1) + "   </pre>" + playlistElement.musicFile.name;
 	htmlPlaylist.appendChild(htmlElement);
 }
 
+function hideMusicSelectionDialog() {
+	overlay = document.getElementById("pathSelectionOverlay");
+	overlay.style.display = "none";
+	document.getElementById("controls").classList.remove("blured");
+}

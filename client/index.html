@@ -6,27 +6,35 @@
 		<link rel="stylesheet" href="css/jsPlayer.css">
 	</head>
 	<body>
-		<input id="musicPath" />
-		<div id="musicChooser" >
+		<div id="content" >
+			<div id="musicChooser" >
 
-		</div>
-		<div id="playlist">
+			</div>
+			<div id="playlist">
 
-		</div>
-		<div id="progressbarContainer">
-			<div id="progressbar">
 			</div>
 		</div>
-		<div id="controls">
-				<span class="button" id="toggle">PLAY/PAUSE</span>
-				<span class="button" id="next" >NEXT</span>
-				<span class="button" id="prev" >PREV</span>
-				<div id="songInfos">
-					<span class="songInfo" id="artist"></span>
-					<span class="songInfo" id="album"></span>
-					<span class="songInfo" id="title"></span>
-					<span class="songInfo" id="art"></span>
+		<div id="controls" class="blured">
+			<div id="progressbarContainer">
+				<div id="progressbar">
 				</div>
+			</div>
+			<span class="button" id="prev" ></span>
+			<span class="button play" id="toggle"></span>
+			<span class="button" id="next" ></span>
+			<div id="songInfos">
+				<span class="songInfo" id="artist"></span>
+				<span class="songInfo" id="album"></span>
+				<span class="songInfo" id="title"></span>
+				<span class="songInfo" id="art"></span>
+			</div>
+		</div>
+
+		<div id="pathSelectionOverlay">
+			<div id="pathSelectDialog">
+				<h1>Musikpfad:</h1>
+				<input id="musicPath" />
+			</div>
 		</div>
 		<script src="js/jsPlayer.js"></script>
 	</body>
