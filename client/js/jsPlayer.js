@@ -215,7 +215,12 @@ function JsPlayer() {
 	this.audio.playlist.onsongchange = songchange;
 
 	this.audio.addEventListener("ended", function() {
-		this.audio.playlist.next();
+		this.playlist.next();
+	});
+
+	this.audio.addEventListener("timeupdate", function() {
+		progressbar = document.querySelector("div#progressbar");
+		progressbar.style.width = (this.currentTime / this.duration * 100) + "%";
 	});
 
 	this.audio.toggle = function() {
@@ -238,6 +243,7 @@ function songadd(playlistElement) {
 	htmlPlaylist = document.querySelector("div#playlist");
 	htmlElement = document.createElement("div");
 	htmlElement.innerHTML = playlistElement.playlistPosition + ": " + playlistElement.musicFile.name;
+
 	htmlPlaylist.appendChild(htmlElement);
 }
 
