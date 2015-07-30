@@ -73,12 +73,10 @@ function renderTreeInDiv(targetDiv, treeToRender, depth) {
 		subElement = treeToRender.subElements[i];
 		if(subElement instanceof Folder) {
 			elementToRender = subElement.HTMLElement;
-			elementToRender.style.marginLeft = (depth * 10) + "px"
 			targetDiv.appendChild(elementToRender);
-			renderTreeInDiv(targetDiv, subElement, depth + 1);
+			renderTreeInDiv(elementToRender, subElement, depth + 1);
 		} else if(subElement instanceof MusicFile) {
 			elementToRender = subElement.HTMLElement;
-			elementToRender.style.marginLeft = (depth * 10) + "px"
 			targetDiv.appendChild(elementToRender);
 		} else {
 			;
