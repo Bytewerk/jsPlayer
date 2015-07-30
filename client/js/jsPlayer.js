@@ -28,11 +28,11 @@ window.onload = function () {
 		xhr.send();
 	}, false);
 
-	pauseBtn = document.querySelector("#pause.button");
+	toggleBtn = document.querySelector("#toggle.button");
 	nextBtn = document.querySelector("#next.button");
 	prevBtn = document.querySelector("#prev.button");
 
-	pauseBtn.addEventListener("click", function() { jsPlayer.pause(); });
+	toggleBtn.addEventListener("click", function() { jsPlayer.toggle(); });
 	nextBtn.addEventListener("click", function() { jsPlayer.playlist.next(); });
 	prevBtn.addEventListener("click", function() { jsPlayer.playlist.prev(); });
 
@@ -165,43 +165,47 @@ function MusicFile(name, artist, album, title, art) {
 
 function Playlist(audioElement) {
 	this.audioElement = audioElement;
-	this.currentSongIndex = -1;
-	this.songs = [];
+	this.currentElementIndex = -1;
+	this.elements = [];
 	this.onsongchange = function() {};
 	this.onsongadd = function() {};
 
 	this.next = function() {
-		if(this.currentSongIndex + 1 < this.songs.length) {
-			this.currentSongIndex += 1;
-			this.onsongchange(this.songs[this.currentSongIndex]);
-			this.audioElement.src = this.songs[this.currentSongIndex].getPath();
+		if(this.currentElementIndex + 1 < this.elements.length) {
+			this.currentElementIndex += 1;
+			this.onsongchange(this.elements[this.currentElementIndex]);
+			this.audioElement.src = this.elements[this.currentElementIndex].musicFile.getPath();
 			this.audioElement.play();
 		};
 	};
 
 	this.prev = function() {
-		if(this.currentSongIndex - 1 >= 0) {
-			this.onsongchange(this.songs[this.currentSongIndex]);
-			this.currentSongIndex -= 1;
-			this.audioElement.src = this.songs[this.currentSongIndex].getPath();
+		if(this.currentElementIndex - 1 >= 0) {
+			this.onsongchange(this.elements[this.currentElementIndex]);
+			this.currentElementIndex -= 1;
+			this.audioElement.src = this.elements[this.currentElementIndex].musicFile.getPath();
 			this.audioElement.play();
 		};
 	};
 
 	this.add = function(songFile, position) {
-		this.onsongadd(songFile);
-		var position = position == undefined ? this.songs.length : position;
-		this.songs.splice(position, 0, songFile);
+		var playlistElement = new PlaylistElement(songFile);
+		var position = position == undefined ? this.elements.length : position;
+		this.elements.splice(position, 0, playlistElement);
+		this.updateAllElementIndex();
+		this.onsongadd(playlistElement);
 	};
 
-	this.findPosition = function(songFile) {
-		for(var i = 0; i < this.songs.length; i++) {
-			if(this.songs[i] == songFile) {
-				return i;
-			}
+	this.updateAllElementIndex = function() {
+		for(var i = 0; i < this.elements.length; i++) {
+			this.elements[i].playlistPosition = i;
 		};
-		return -1;
 	};
+};
+
+function PlaylistElement(musicFile) {
+	this.playlistPosition = -1;
+	this.musicFile = musicFile;
 };
 
 function JsPlayer() {
@@ -214,6 +218,15 @@ function JsPlayer() {
 		this.audio.playlist.next();
 	});
 
+	this.audio.toggle = function() {
+		foo = this;
+		if(this.paused) {
+			this.play();
+		} else {
+			this.pause();
+		}
+	}
+
 	return this.audio;
 };
 
@@ -221,9 +234,10 @@ function songchange(audioFile) {
 	htmlPlaylist = document.querySelector("div#playlist");
 };
 
-function songadd(audioFile) {
+function songadd(playlistElement) {
 	htmlPlaylist = document.querySelector("div#playlist");
 	htmlElement = document.createElement("div");
-	htmlElement.innerHTML = jsPlayer.playlist.findPosition(audioFile) + audioFile.name
+	htmlElement.innerHTML = playlistElement.playlistPosition + ": " + playlistElement.musicFile.name;
+	htmlPlaylist.appendChild(htmlElement);
 }
 
