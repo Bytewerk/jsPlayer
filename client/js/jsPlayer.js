@@ -3,6 +3,8 @@ rootFiletree = new Folder(" ");
 jsPlayer = new JsPlayer();
 var global_unique_id = 0;
 
+var winWidth = document.getElementsByTagName("body")[0].clientWidth
+
 window.onload = function () {
 	musicPathInput = document.getElementById("musicPath");
 	musicPathInput.addEventListener("input", function(){
@@ -33,6 +35,12 @@ window.onload = function () {
 	toggleBtn = document.querySelector("#toggle.button");
 	nextBtn = document.querySelector("#next.button");
 	prevBtn = document.querySelector("#prev.button");
+	progressBarContainer = document.querySelector("#progressbarContainer");
+	progressBar = document.querySelector("#progressBar");
+
+	progressBarContainer.onclick = function(e) {
+		jsPlayer.currentTime = (jsPlayer.duration / winWidth) * e.layerX;
+	};
 
 	toggleBtn.addEventListener("click", function() { jsPlayer.toggle(); });
 	nextBtn.addEventListener("click", function() { jsPlayer.playlist.next(); });
