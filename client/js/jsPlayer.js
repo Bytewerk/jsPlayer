@@ -62,7 +62,7 @@ function buildFiletree(data, rootTree) {
 			rootTree.addSubElement(folderToAdd);
 			buildFiletree(data[subName], folderToAdd);
 		} else if(subElementType == "file") {
-			musicFileToAdd = new MusicFile(subName, data[subName]["album"], data[subName]["artist"], data[subName]["title"], data[subName]["art"]);
+			musicFileToAdd = new MusicFile(subName, data[subName]["album"], data[subName]["artist"], data[subName]["title"], data[subName]["image"]);
 			rootTree.addSubElement(musicFileToAdd);
 		}
 	}
@@ -148,9 +148,16 @@ function MusicFile(name, artist, album, title, art) {
 
 	this.HTMLElement.classList.add(this.name.replace(/\s/g, "_"));
 	this.HTMLElement.classList.add("file");
-	this.HTMLElement.innerHTML = this.name
 
-	this.HTMLElement.setAttribute("unique_id", this.unique_id)
+	this.artTag = '<span class="album_art">';
+	if(art) {
+		this.artTag += '<img src="data:image/jpeg;base64,' + art + '" alt="Album art">';
+	}
+	this.artTag += '</span>';
+
+	this.HTMLElement.innerHTML = this.artTag + '<span class="library_name">' + this.name + '</span>';
+
+	this.HTMLElement.setAttribute("unique_id", this.unique_id);
 
 	this.findElement = function(unique_id) {
 		if(this.unique_id == unique_id) {
