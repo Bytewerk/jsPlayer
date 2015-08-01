@@ -1,5 +1,4 @@
 dbfilename = "database.json";
-rootFiletree = new Folder(" ");
 jsPlayer = new JsPlayer();
 var global_unique_id = 0;
 
@@ -8,15 +7,15 @@ window.onload = function () {
 	musicPathInput.addEventListener("input", function(){
 		var musicPath = musicPathInput.value;
 		musicPath = musicPath.substr(musicPath.length - 1, musicPath.length) == "/" ? musicPath.substr(0, musicPath.length - 1) : musicPath;
-		musicPath = musicPath + "/" + dbfilename;
+		musicDbPath = musicPath + "/" + dbfilename;
 		var xhr = new XMLHttpRequest();
-		xhr.open("get", musicPath, true);
+		xhr.open("get", musicDbPath, true);
 		xhr.overrideMimeType("text/html");
 		xhr.onreadystatechange = function() {
 			if(xhr.readyState == 4) {
 				if(xhr.status == 200) {
 					data = JSON.parse(xhr.responseText);
-					buildFiletree(data, rootFiletree);
+					rootFiletree = buildFiletree(data, musicPath);
 					renderTreeInDiv(document.getElementById("musicChooser"), rootFiletree, 0)
 					allSongDivs = document.querySelectorAll("#musicChooser .file");
 					for (var i = 0, len = allSongDivs.length; i < len; i++) {
@@ -59,6 +58,10 @@ function onMusicClickListener(e) {
 };
 
 function buildFiletree(data, rootTree) {
+	if(!(rootTree instanceof Folder)){
+		rootTree = new Folder(rootTree, true);
+	};
+
 	for(subName in data) {
 		subElementType = data[subName]["/type/"];
 		if(subElementType == "folder") {
@@ -70,9 +73,18 @@ function buildFiletree(data, rootTree) {
 			rootTree.addSubElement(musicFileToAdd);
 		}
 	}
+
+	return rootTree;
 }
 
 function renderTreeInDiv(targetDiv, treeToRender, depth) {
+	if(treeToRender.isRoot){
+		mainFolder = treeToRender.HTMLElement;
+		targetDiv.appendChild(mainFolder);
+		depth += 1;
+		targetDiv = mainFolder;
+	}
+
 	for(var i = 0; i < treeToRender.subElements.length; i++) {
 		subElement = treeToRender.subElements[i];
 		if(subElement instanceof Folder) {
@@ -88,12 +100,13 @@ function renderTreeInDiv(targetDiv, treeToRender, depth) {
 	}
 };
 
-function Folder(name) {
+function Folder(name, isRoot) {
 	global_unique_id += 1;
 	this.unique_id = global_unique_id;
 	this.HTMLElement = document.createElement("div");
 	this.name = name;
 	this.subElements = [];
+	this.isRoot = isRoot || false;
 
 	this.addSubElement = function(element) {
 		this.subElements.push(element);
