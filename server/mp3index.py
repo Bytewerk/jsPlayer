@@ -82,4 +82,4 @@ for root, dirs, files in os.walk(FOLDER):
 			dirobj[f] = mp3info
 
 with open(OUTPUT, 'w') as outfile:
-	outfile.write(json.dumps(mp3db))
+	outfile.write(json.dumps(mp3db, sort_keys=True))
