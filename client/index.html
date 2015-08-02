@@ -32,8 +32,17 @@
 
 		<div id="pathSelectionOverlay">
 			<div id="pathSelectDialog">
-				<h1>Musikpfad:</h1>
-				<input id="musicPath" />
+				<div id="pathContainer">
+					<h1>Musikpfad:</h1>
+					<input id="musicPath" />
+				</div>
+				<div id="controlContainer">
+					<span>
+						<input type="checkbox" id="rememberPath">
+						</input><label for="rememberPath">Pfad merken</label>
+					</span>
+					<button id="checkFolderButton">Weiter</button>
+				</div>
 			</div>
 		</div>
 		<script src="js/jsPlayer.js"></script>

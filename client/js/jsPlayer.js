@@ -3,31 +3,27 @@ jsPlayer = new JsPlayer();
 var global_unique_id = 0;
 
 window.onload = function () {
-	musicPathInput = document.getElementById("musicPath");
-	musicPathInput.addEventListener("input", function(){
-		var musicPath = musicPathInput.value;
-		musicPath = musicPath.substr(musicPath.length - 1, musicPath.length) == "/" ? musicPath.substr(0, musicPath.length - 1) : musicPath;
-		musicDbPath = musicPath + "/" + dbfilename;
-		var xhr = new XMLHttpRequest();
-		xhr.open("get", musicDbPath, true);
-		xhr.overrideMimeType("text/html");
-		xhr.onreadystatechange = function() {
-			if(xhr.readyState == 4) {
-				if(xhr.status == 200) {
-					data = JSON.parse(xhr.responseText);
-					rootFiletree = buildFiletree(data, musicPath);
-					renderTreeInDiv(document.getElementById("musicChooser"), rootFiletree, 0)
-					allSongDivs = document.querySelectorAll("#musicChooser .file");
-					for (var i = 0, len = allSongDivs.length; i < len; i++) {
-						allSongDivs[i].addEventListener("click", onMusicClickListener);
-					};
-					hideMusicSelectionDialog();
-				};
-			};
-		};
-		xhr.send();
-	}, false);
+	if(localStorage.getItem("musicPath")) {
+		initCheckFolder();
+	};
 
+	checkBtn = document.getElementById("checkFolderButton");
+	checkBtn.addEventListener("click", function() {
+		initCheckFolder();
+	});
+
+	rememberPath = document.getElementById("rememberPath");
+	rememberPath.addEventListener("change", function() {
+		if(rememberPath.checked) {
+			musicPathInput = document.getElementById("musicPath");
+			musicPathInput.addEventListener("change", function() {
+				persistPath();
+			});
+			persistPath();
+		} else {
+			localStorage.removeItem("musicPath");
+		};
+	});
 
 	toggleBtn = document.querySelector("#toggle.button");
 	nextBtn = document.querySelector("#next.button");
@@ -44,6 +40,43 @@ window.onload = function () {
 	nextBtn.addEventListener("click", function() { jsPlayer.playlist.next(); });
 	prevBtn.addEventListener("click", function() { jsPlayer.playlist.prev(); });
 
+};
+
+function persistPath() {
+	var musicPathInput = document.getElementById("musicPath");
+	var musicPath = musicPathInput.value;
+	musicPath = musicPath.substr(musicPath.length - 1, musicPath.length) == "/" ? musicPath.substr(0, musicPath.length - 1) : musicPath;
+	localStorage.setItem("musicPath", musicPath);
+};
+
+function initCheckFolder() {
+	musicPathInput = document.getElementById("musicPath");
+
+	if(!localStorage.getItem("musicPath")) {
+		var musicPath = musicPathInput.value;
+		musicPath = musicPath.substr(musicPath.length - 1, musicPath.length) == "/" ? musicPath.substr(0, musicPath.length - 1) : musicPath;
+	} else {
+		musicPath = localStorage.getItem("musicPath");
+	};
+	musicDbPath = musicPath + "/" + dbfilename;
+	var xhr = new XMLHttpRequest();
+	xhr.open("get", musicDbPath, true);
+	xhr.overrideMimeType("text/html");
+	xhr.onreadystatechange = function() {
+		if(xhr.readyState == 4) {
+			if(xhr.status == 200) {
+				data = JSON.parse(xhr.responseText);
+				rootFiletree = buildFiletree(data, musicPath);
+				renderTreeInDiv(document.getElementById("musicChooser"), rootFiletree, 0)
+				allSongDivs = document.querySelectorAll("#musicChooser .file");
+				for (var i = 0, len = allSongDivs.length; i < len; i++) {
+					allSongDivs[i].addEventListener("click", onMusicClickListener);
+				};
+				hideMusicSelectionDialog();
+			};
+		};
+	};
+	xhr.send();
 };
 
 function onMusicClickListener(e) {
@@ -147,6 +180,7 @@ function Folder(name, isRoot) {
 	this.HTMLElement.classList.add(this.name.replace(/\s/g, "_"));
 	this.HTMLElement.classList.add("folder");
 	this.HTMLElement.innerHTML = this.name;
+	this.HTMLElement.setAttribute("draggable", "true");
 
 	this.HTMLElement.setAttribute("unique_id", this.unique_id)
 }
@@ -173,6 +207,7 @@ function MusicFile(name, artist, album, title, art) {
 	this.HTMLElement.innerHTML = this.artTag + '<span class="library_name">' + this.name + '</span>';
 
 	this.HTMLElement.setAttribute("unique_id", this.unique_id);
+	this.HTMLElement.setAttribute("draggable", "true");
 
 	this.findElement = function(unique_id) {
 		if(this.unique_id == unique_id) {
@@ -248,6 +283,7 @@ function Playlist(audioElement) {
 };
 
 function PlaylistElement(musicFile) {
+	this.HTMLElement = document.createElement("div");
 	this.playlistPosition = -1;
 	this.musicFile = musicFile;
 };
@@ -297,6 +333,7 @@ function songchange(audioFile) {
 function songadd(playlistElement) {
 	htmlPlaylist = document.querySelector("div#playlist");
 	htmlElement = document.createElement("div");
+	htmlElement.setAttribute("draggable", "true");
 	htmlElement.innerHTML = "<pre class=\"playlistPosition\">" + (playlistElement.playlistPosition + 1) + "   </pre>" + playlistElement.musicFile.name;
 	htmlPlaylist.appendChild(htmlElement);
 }
