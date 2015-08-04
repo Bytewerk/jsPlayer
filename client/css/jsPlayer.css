@@ -54,6 +54,10 @@ html {
 	cursor: pointer;
 }
 
+#playlist div.current {
+	font-weight: bold;
+}
+
 #playlist .playlistPosition {
 	display: inline;
 	font-weight: bold;

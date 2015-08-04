@@ -249,7 +249,7 @@ function Playlist(audioElement) {
 
 	this.next = function() {
 		if(this.currentElementIndex + 1 < this.elements.length) {
-			this.currentElementIndex += 1;
+			this.updateCurrentElement(this.currentElementIndex + 1);
 			this.onsongchange(this.elements[this.currentElementIndex]);
 			this.audioElement.src = this.elements[this.currentElementIndex].musicFile.getPath();
 			this.audioElement.play();
@@ -258,8 +258,8 @@ function Playlist(audioElement) {
 
 	this.prev = function() {
 		if(this.currentElementIndex - 1 >= 0) {
+			this.updateCurrentElement(this.currentElementIndex - 1);
 			this.onsongchange(this.elements[this.currentElementIndex]);
-			this.currentElementIndex -= 1;
 			this.audioElement.src = this.elements[this.currentElementIndex].musicFile.getPath();
 			this.audioElement.play();
 		};
@@ -267,7 +267,7 @@ function Playlist(audioElement) {
 
 	this.play = function(elementNr) {
 		if(elementNr >= 0 && elementNr < this.elements.length) {
-			this.currentElementIndex = elementNr;
+			this.updateCurrentElement(elementNr);
 			this.onsongchange(this.elements[this.currentElementIndex]);
 			this.audioElement.src = this.elements[this.currentElementIndex].musicFile.getPath();
 			this.audioElement.play();
@@ -284,6 +284,24 @@ function Playlist(audioElement) {
 			this.play(0);
 		};
 	};
+
+	this.updateCurrentElement = function(elementNr) {
+		prevElementIndex = this.currentElementIndex;
+		this.currentElementIndex = elementNr;
+
+		// update classes of the current and old elements
+		playlistElements = document.querySelectorAll("#playlist div");
+		for(var i = 0; i < playlistElements.length; i++) {
+			elem = playlistElements[i];
+			unique_id = elem.getAttribute("unique_id");
+
+			if(unique_id == prevElementIndex) {
+				elem.classList.remove("current");
+			} else if(unique_id == this.currentElementIndex) {
+				elem.classList.add("current");
+			}
+		}
+	}
 
 	this.updateAllElementIndex = function() {
 		for(var i = 0; i < this.elements.length; i++) {
