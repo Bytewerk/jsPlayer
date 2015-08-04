@@ -90,6 +90,16 @@ function onMusicClickListener(e) {
 	jsPlayer.playlist.add(pathToPlay);
 };
 
+function onPlaylistClickListener(e) {
+	t = e.target;
+	do {
+		targetId = t.getAttribute("unique_id");
+		t = t.parentNode;
+	} while(t && !targetId);
+
+	jsPlayer.playlist.play(targetId);
+};
+
 function buildFiletree(data, rootTree) {
 	if(!(rootTree instanceof Folder)){
 		rootTree = new Folder(rootTree, true);
@@ -334,7 +344,9 @@ function songadd(playlistElement) {
 	htmlPlaylist = document.querySelector("div#playlist");
 	htmlElement = document.createElement("div");
 	htmlElement.setAttribute("draggable", "true");
+	htmlElement.setAttribute("unique_id", playlistElement.playlistPosition); // FIXME: use hashcode when implementing Drag&Drop
 	htmlElement.innerHTML = "<pre class=\"playlistPosition\">" + (playlistElement.playlistPosition + 1) + "   </pre>" + playlistElement.musicFile.name;
+	htmlElement.addEventListener("click", onPlaylistClickListener);
 	htmlPlaylist.appendChild(htmlElement);
 }
 
